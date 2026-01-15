@@ -84,7 +84,8 @@ function(input, output, session) { #nolint
         "organizations_page",
         reactive(input$fhir_version),
         reactive(input$vendor),
-        reactive(input$match_confidence))
+        reactive(input$match_confidence),
+        reactive(input$is_chpl))
 
       callModule(
         capabilitystatementsizemodule,
@@ -270,6 +271,10 @@ function(input, output, session) { #nolint
     input$side_menu %in% c("endpoints_tab")
   )
 
+  show_source_filter <- reactive(
+    input$side_menu %in% c("organizations_tab")
+  )
+
   show_validations_filter <- reactive(
     input$side_menu %in% c("validations_tab")
   )
@@ -401,6 +406,18 @@ function(input, output, session) { #nolint
           fhirDropdown_noLabel),
           column(width = 4, developerDropdown),
           column(width = 4, contactDropdown)
+        )
+      } else if (show_source_filter()) {
+        fluidRow(
+          column(width = 4,
+          tags$div(
+            p("FHIR Version: ", style = "font-weight: 700; font-size: 14px;"),
+            actionButton("fhirversion_selectall", "Select All FHIR Versions", width = "145px", style = "font-size: 11px; margin-bottom: 3px; margin-left: auto; background-color: white;"),
+            actionButton("fhirversion_removeall", "Remove All FHIR Versions", width = "145px", style = "font-size: 11px; margin-bottom: 3px; margin-left: auto; background-color: white;")
+          ),
+          fhirDropdown_noLabel),
+          column(width = 4, developerDropdown),
+          column(width = 4, chplDropdown)
         )
       } else {
         fluidRow(
@@ -921,6 +938,11 @@ current_endpoint <- reactive({
       endpoint_requested_fhir_version <- res$requested_fhir_version[1]
     }
   }
+
+  if (input$vendor != ui_special_values$ALL_DEVELOPERS) {
+    endpoint_vendor_name <- input$vendor
+  }
+  
   current_endpoint_list <- list(url = endpointURL, requested_fhir_version = endpoint_requested_fhir_version, vendor_name = endpoint_vendor_name)
   current_endpoint_list
 })
