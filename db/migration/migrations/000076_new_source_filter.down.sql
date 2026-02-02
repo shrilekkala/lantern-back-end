@@ -61,7 +61,7 @@ endpoint_counts_base AS (
             -- Apply the dash rule: if there's a dash, trim after it
             WHEN position('-' in e.fhir_version) > 0 THEN substring(e.fhir_version, 1, position('-' in e.fhir_version) - 1)
             -- If it's not in the valid list, mark as Unknown
-            WHEN e.fhir_version NOT IN ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1') THEN 'Unknown'
+            WHEN e.fhir_version NOT IN ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5') THEN 'Unknown'
             ELSE e.fhir_version
         END AS fhir_version,
         COUNT(DISTINCT e.url) AS n,
@@ -80,7 +80,7 @@ endpoint_counts_base AS (
         CASE
             WHEN e.fhir_version IS NULL OR trim(e.fhir_version) = '' THEN 'No Cap Stat'
             WHEN position('-' in e.fhir_version) > 0 THEN substring(e.fhir_version, 1, position('-' in e.fhir_version) - 1)
-            WHEN e.fhir_version NOT IN ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1') THEN 'Unknown'
+            WHEN e.fhir_version NOT IN ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5') THEN 'Unknown'
             ELSE e.fhir_version
         END,
         r.rank,
@@ -161,7 +161,7 @@ endpoint_details AS (
     CASE 
       WHEN fhir_version = '' OR fhir_version IS NULL THEN 'No Cap Stat'
       WHEN position('-' in fhir_version) > 0 THEN substring(fhir_version from 1 for position('-' in fhir_version) - 1)
-      WHEN fhir_version NOT IN ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1') THEN 'Unknown'
+      WHEN fhir_version NOT IN ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5') THEN 'Unknown'
       ELSE fhir_version
     END AS fhir_version,
     requested_fhir_version
@@ -342,15 +342,15 @@ processed_data AS (
             WHEN fhir_version = '' OR fhir_version IS NULL THEN 'No Cap Stat'
             WHEN position('-' in fhir_version) > 0 THEN 
                 CASE
-                    WHEN substring(fhir_version, 1, position('-' in fhir_version) - 1) IN 
-                        ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', 
-                         '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1', 'No Cap Stat')
+                    WHEN substring(fhir_version, 1, position('-' in fhir_version) - 1) IN
+                        ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8',
+                         '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5', 'No Cap Stat')
                     THEN substring(fhir_version, 1, position('-' in fhir_version) - 1)
                     ELSE 'Unknown'
                 END
-            WHEN fhir_version IN 
-                ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', 
-                 '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1', 'No Cap Stat')
+            WHEN fhir_version IN
+                ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8',
+                 '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5', 'No Cap Stat')
             THEN fhir_version
             ELSE 'Unknown'
         END AS fhir_version,
@@ -501,7 +501,7 @@ endpoint_data_agg AS (
         MAX(organization_name) as organization_name,
         -- HTML formatted endpoint URLs
         string_agg(
-            DISTINCT '<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing additional information for this endpoint." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" onclick="Shiny.setInputValue(''endpoint_popup'',&quot;' || url || '&quot,{priority: ''event''});"> ' || url || '</a>',
+            DISTINCT '<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing additional information for this endpoint." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" onclick="Shiny.setInputValue(''endpoint_popup'',''' || url || '&&None' || ',&&,' || vendor_name || ',{priority: ''event''});">' || url || '</a>',
             '<br/>'
         ) as endpoint_urls_html,
         -- Truncate at complete lines to prevent CSV corruption
@@ -655,12 +655,12 @@ SELECT
         -- Then handle version with dash
         WHEN e.fhir_version LIKE '%-%' THEN 
             CASE 
-                WHEN SPLIT_PART(e.fhir_version, '-', 1) IN ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1') 
+                WHEN SPLIT_PART(e.fhir_version, '-', 1) IN ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5')
                 THEN SPLIT_PART(e.fhir_version, '-', 1)
                 ELSE 'Unknown'
             END
         -- Handle regular versions
-        WHEN e.fhir_version IN ('0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', '4.0.0', '4.0.1') 
+        WHEN e.fhir_version IN ('0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2', '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3', '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5') 
         THEN e.fhir_version
         ELSE 'Unknown'
     END AS fhir_version_final
@@ -705,7 +705,7 @@ SELECT
                     '; '
                 ),
                 '; <a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing the endpoint''s entire list of API information source names." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" onclick="Shiny.setInputValue(''show_details'',''', 
-                se.url, 
+                se.url, '&&', se.vendor_name, 
                 ''',{priority: ''event''});"> Click For More... </a>'
             )
         ELSE 
@@ -716,7 +716,8 @@ SELECT
     CONCAT(
         '<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing additional information for this endpoint." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" onclick="Shiny.setInputValue(''endpoint_popup'',''', 
         se.url, 
-        '&&None'',{priority: ''event''});">', 
+        '&&None','&&', 
+        se.vendor_name,',{priority: ''event''});">', 
         se.url, 
         '</a>'
     ) AS url_modal
@@ -803,10 +804,11 @@ validated AS (
     capability_fhir_version,
     CASE 
       WHEN fhir_version IN (
-           'No Cap Stat', '0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2',
-           '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0',
-           '3.0.0', '3.0.1', '3.0.2', '3.2.0', '3.3.0',
-           '3.5.0', '3.5a.0', '4.0.0', '4.0.1'
+           'No Cap Stat', '0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2',
+           '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8',
+           '3.0.0', '3.0', '3', '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3',
+           '3.5.0', '3.5', '3.5a.0', '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3',
+           '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5'
          )
       THEN fhir_version
       ELSE 'Unknown'
@@ -916,7 +918,7 @@ WITH base AS (
             CASE
                 WHEN base.capability_fhir_version::text ~~ '%-%'::text THEN split_part(base.capability_fhir_version::text, '-'::text, 1)::character varying
                 ELSE base.capability_fhir_version
-            END::text = ANY (ARRAY['No Cap Stat'::character varying, '0.4.0'::character varying, '0.5.0'::character varying, '1.0.0'::character varying, '1.0.1'::character varying, '1.0.2'::character varying, '1.1.0'::character varying, '1.2.0'::character varying, '1.4.0'::character varying, '1.6.0'::character varying, '1.8.0'::character varying, '3.0.0'::character varying, '3.0.1'::character varying, '3.0.2'::character varying, '3.2.0'::character varying, '3.3.0'::character varying, '3.5.0'::character varying, '3.5a.0'::character varying, '4.0.0'::character varying, '4.0.1'::character varying]::text[]) THEN
+            END::text = ANY (ARRAY['No Cap Stat'::character varying, '0.4.0'::character varying, '0.4'::character varying, '0.5.0'::character varying, '0.5'::character varying, '1.0.0'::character varying, '1.0'::character varying, '1'::character varying, '1.0.1'::character varying, '1.0.2'::character varying, '1.1.0'::character varying, '1.1'::character varying, '1.2.0'::character varying, '1.2'::character varying, '1.4.0'::character varying, '1.4'::character varying, '1.6.0'::character varying, '1.6'::character varying, '1.8.0'::character varying, '1.8'::character varying, '3.0.0'::character varying, '3.0'::character varying, '3'::character varying, '3.0.1'::character varying, '3.0.2'::character varying, '3.2.0'::character varying, '3.2'::character varying, '3.3.0'::character varying, '3.3'::character varying, '3.5.0'::character varying, '3.5'::character varying, '3.5a.0'::character varying, '4.0.0'::character varying, '4.0'::character varying, '4'::character varying, '4.0.1'::character varying, '4.1.0'::character varying, '4.1'::character varying, '4.3.0'::character varying, '4.3'::character varying, '4.2.0'::character varying, '4.2'::character varying, '4.4.0'::character varying, '4.4'::character varying, '4.5.0'::character varying, '4.5'::character varying, '4.6.0'::character varying, '4.6'::character varying, '5.0.0'::character varying, '5.0'::character varying, '5'::character varying]::text[]) THEN
             CASE
                 WHEN base.capability_fhir_version::text ~~ '%-%'::text THEN split_part(base.capability_fhir_version::text, '-'::text, 1)::character varying
                 ELSE base.capability_fhir_version
@@ -943,7 +945,7 @@ WITH original AS (
             CASE
                 WHEN cardinality(string_to_array(mv_well_known_endpoints.organization_names, ';'::text)) > 5 THEN (((array_to_string(( SELECT array_agg(t.elem) AS array_agg
                    FROM unnest(string_to_array(mv_well_known_endpoints.organization_names, ';'::text)) WITH ORDINALITY t(elem, ord)
-                  WHERE t.ord <= 5), ';'::text) || '; '::text) || '<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing the endpoint''s entire list of API information source names." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click();}})(event)" onclick="Shiny.setInputValue(''show_details'','''::text) || mv_well_known_endpoints.url::text) || ''',{priority: ''event''});"> Click For More... </a>'::text
+                  WHERE t.ord <= 5), ';'::text) || '; '::text) || '<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop up modal containing the endpoint''s entire list of API information source names." onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click();}})(event)" onclick="Shiny.setInputValue(''show_details'','''::text) || mv_well_known_endpoints.url::text) || '&&'::text || mv_well_known_endpoints.vendor_name::text || ''',{priority: ''event''});"> Click For More... </a>'::text
                 ELSE mv_well_known_endpoints.organization_names
             END
         END AS condensed_organization_names,
@@ -995,7 +997,7 @@ SELECT
 			WHEN base.fhir_version::text = ''::text THEN 'No Cap Stat'::character varying
 			WHEN base.fhir_version::text ~~ '%-%'::text THEN split_part(base.fhir_version::text, '-'::text, 1)::character varying
 			ELSE base.fhir_version
-		END::text = ANY (ARRAY['No Cap Stat'::character varying, '0.4.0'::character varying, '0.5.0'::character varying, '1.0.0'::character varying, '1.0.1'::character varying, '1.0.2'::character varying, '1.1.0'::character varying, '1.2.0'::character varying, '1.4.0'::character varying, '1.6.0'::character varying, '1.8.0'::character varying, '3.0.0'::character varying, '3.0.1'::character varying, '3.0.2'::character varying, '3.2.0'::character varying, '3.3.0'::character varying, '3.5.0'::character varying, '3.5a.0'::character varying, '4.0.0'::character varying, '4.0.1'::character varying]::text[]) THEN
+		END::text = ANY (ARRAY['No Cap Stat'::character varying, '0.4.0'::character varying, '0.4'::character varying, '0.5.0'::character varying, '0.5'::character varying, '1.0.0'::character varying, '1.0'::character varying, '1'::character varying, '1.0.1'::character varying, '1.0.2'::character varying, '1.1.0'::character varying, '1.1'::character varying, '1.2.0'::character varying, '1.2'::character varying, '1.4.0'::character varying, '1.4'::character varying, '1.6.0'::character varying, '1.6'::character varying, '1.8.0'::character varying, '1.8'::character varying, '3.0.0'::character varying, '3.0'::character varying, '3'::character varying, '3.0.1'::character varying, '3.0.2'::character varying, '3.2.0'::character varying, '3.2'::character varying, '3.3.0'::character varying, '3.3'::character varying, '3.5.0'::character varying, '3.5'::character varying, '3.5a.0'::character varying, '4.0.0'::character varying, '4.0'::character varying, '4'::character varying, '4.0.1'::character varying, '4.1.0'::character varying, '4.1'::character varying, '4.3.0'::character varying, '4.3'::character varying, '4.2.0'::character varying, '4.2'::character varying, '4.4.0'::character varying, '4.4'::character varying, '4.5.0'::character varying, '4.5'::character varying, '4.6.0'::character varying, '4.6'::character varying, '5.0.0'::character varying, '5.0'::character varying, '5'::character varying]::text[]) THEN
 		CASE
 			WHEN base.fhir_version::text = ''::text THEN 'No Cap Stat'::character varying
 			WHEN base.fhir_version::text ~~ '%-%'::text THEN split_part(base.fhir_version::text, '-'::text, 1)::character varying
@@ -1050,10 +1052,11 @@ SELECT
     -- Step 3: Use the fixed list of valid FHIR versions 
     CASE 
         WHEN p.capability_fhir_version = 'No Cap Stat' THEN 'No Cap Stat'  -- Ensure "No Cap Stat" is preserved
-        WHEN p.fhir_version_raw IN ('No Cap Stat', '0.4.0', '0.5.0', '1.0.0', '1.0.1', '1.0.2', 
-                                  '1.1.0', '1.2.0', '1.4.0', '1.6.0', '1.8.0', '3.0.0', 
-                                  '3.0.1', '3.0.2', '3.2.0', '3.3.0', '3.5.0', '3.5a.0', 
-                                  '4.0.0', '4.0.1')
+        WHEN p.fhir_version_raw IN ('No Cap Stat', '0.4.0', '0.4', '0.5.0', '0.5', '1.0.0', '1.0', '1', '1.0.1', '1.0.2',
+                                  '1.1.0', '1.1', '1.2.0', '1.2', '1.4.0', '1.4', '1.6.0', '1.6', '1.8.0', '1.8', '3.0.0', '3.0', '3',
+                                  '3.0.1', '3.0.2', '3.2.0', '3.2', '3.3.0', '3.3', '3.5.0', '3.5', '3.5a.0',
+                                  '4.0.0', '4.0', '4', '4.0.1', '4.1.0', '4.1', '4.3.0', '4.3',
+                                  '4.2.0', '4.2', '4.4.0', '4.4', '4.5.0', '4.5', '4.6.0', '4.6', '5.0.0', '5.0', '5')
             THEN p.fhir_version_raw
         ELSE 'Unknown'  
     END AS fhir_version,
@@ -1174,7 +1177,7 @@ SELECT
     -- Generate URL modal link
     CONCAT('<a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop-up modal containing additional information for this endpoint." 
             onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" 
-            onclick="Shiny.setInputValue(''endpoint_popup'',''', e.url, '&&', e.requested_fhir_version, ''',{priority: ''event''});">', e.url, '</a>') 
+            onclick="Shiny.setInputValue(''endpoint_popup'',''', e.url, '&&', e.requested_fhir_version, '&&', e.vendor_name, ''',{priority: ''event''});">', e.url, '</a>') 
     AS "urlModal",
 
     -- Generate Condensed Endpoint Names
@@ -1185,7 +1188,7 @@ SELECT
             array_to_string(ARRAY(SELECT unnest(string_to_array(e.endpoint_names, ';')) LIMIT 5), '; '),
             '; <a class="lantern-url" tabindex="0" aria-label="Press enter to open a pop-up modal containing the endpoint''s entire list of API information source names." 
                 onkeydown="javascript:(function(event) { if (event.keyCode === 13){event.target.click()}})(event)" 
-                onclick="Shiny.setInputValue(''show_details'',''', e.url, ''',{priority: ''event''});"> Click For More... </a>'
+                onclick="Shiny.setInputValue(''show_details'',''', e.url, '&&', e.vendor_name, ''',{priority: ''event''});"> Click For More... </a>'
         )
         ELSE e.endpoint_names
     END AS condensed_endpoint_names

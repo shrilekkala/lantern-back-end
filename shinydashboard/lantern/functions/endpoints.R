@@ -29,8 +29,12 @@ get_endpoint_export_tbl <- function(db_tables) {
 }
 
 get_endpoint_organization_list <- function(endpoint) {
+  splitString <- strsplit(endpoint, "&&")[[1]]
+    endpoint_name <- splitString[1]
+    vendor_name <- splitString[2]
+  
   res <- tbl(db_connection,
-  sql(paste0("SELECT url, UNNEST(endpoint_names) as endpoint_names_list FROM endpoint_export WHERE url = '", endpoint, "' ORDER BY endpoint_names_list"))) %>%
+  sql(paste0("SELECT url, UNNEST(endpoint_names) as endpoint_names_list FROM endpoint_export WHERE url = '", endpoint_name, "' AND vendor_name = '", vendor_name, "' ORDER BY endpoint_names_list"))) %>%
   collect() %>%
   group_by(url) %>%
   summarise(endpoint_names_list = list(endpoint_names_list)) %>%
@@ -126,6 +130,8 @@ get_fhir_version_factors <- function(endpoint_tbl) {
 get_distinct_fhir_version_list_no_capstat <- function(endpoint_export_tbl) {
   res <- endpoint_export_tbl %>%
   distinct(fhir_version) %>%
+  mutate(fhir_version = normalize_fhir_version(fhir_version)) %>%
+  distinct(fhir_version) %>%
   split(.$fhir_version) %>%
   purrr::map(~ .$fhir_version)
 }
@@ -133,6 +139,8 @@ get_distinct_fhir_version_list_no_capstat <- function(endpoint_export_tbl) {
 get_distinct_fhir_version_list <- function(endpoint_export_tbl) {
   res <- endpoint_export_tbl %>%
   filter(fhir_version != "No Cap Stat") %>%
+  distinct(fhir_version) %>%
+  mutate(fhir_version = normalize_fhir_version(fhir_version)) %>%
   distinct(fhir_version) %>%
   split(.$fhir_version) %>%
   purrr::map(~ .$fhir_version)
@@ -143,6 +151,8 @@ get_fhir_version_list <- function(endpoint_export_tbl, no_cap_stat) {
   fhir_version_list <- list()
 
   res <- endpoint_export_tbl %>%
+  distinct(fhir_version) %>%
+  mutate(fhir_version = normalize_fhir_version(fhir_version)) %>%
   distinct(fhir_version)
 
   res <- res %>% mutate(fhir_version_name = case_when(
